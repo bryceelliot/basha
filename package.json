@@ -1,0 +1,14 @@
+{
+  "name": "basha-kelowna",
+  "version": "1.0.0",
+  "description": "Basha Donair & Shawarma Kelowna — official website",
+  "scripts": {
+    "build": "tailwindcss -i ./src/css/input.css -o ./css/style.css --minify",
+    "dev": "tailwindcss -i ./src/css/input.css -o ./css/style.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.4",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38"
+  }
+}
