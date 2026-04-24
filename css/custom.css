@@ -451,3 +451,146 @@ a.link-ink:hover { color: #CC1122; }
   }
   .reveal { opacity: 1; }
 }
+
+/* ============================================================
+   TIER-1 BRAND POLISH (2026) — Apple/Stripe/Airbnb micro-details
+   ============================================================ */
+
+/* --- Refined text selection --- */
+::selection { background: #CC1122; color: #fff; }
+::-moz-selection { background: #CC1122; color: #fff; }
+
+/* --- Focus-visible only (no blue ring on mouse click) --- */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid #222;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* --- Smooth image load (blur-up shimmer placeholder) --- */
+img {
+  background: linear-gradient(110deg, #f2f2f2 8%, #eaeaea 18%, #f2f2f2 33%);
+  background-size: 200% 100%;
+  animation: imgShimmer 1.4s linear infinite;
+}
+img[src] { animation: none; background: none; }
+@keyframes imgShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* --- Refined optical adjustments --- */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+  font-optical-sizing: auto;
+}
+p { text-wrap: pretty; }
+
+/* --- Subtle underline on all text links in body copy --- */
+main p a,
+main li a {
+  color: #222;
+  text-decoration: underline;
+  text-decoration-color: #dddddd;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease, color 0.2s ease;
+}
+main p a:hover,
+main li a:hover {
+  text-decoration-color: #CC1122;
+  color: #CC1122;
+}
+
+/* --- Cursor-follow spotlight (hero ambient) --- */
+.spotlight-area { position: relative; overflow: hidden; }
+.spotlight-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 50%),
+              rgba(204, 17, 34, 0.08), transparent 60%);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* --- Polished button pulse on idle --- */
+.btn-rausch.cta-primary {
+  position: relative;
+  animation: idleBreath 3.2s ease-in-out infinite;
+}
+@keyframes idleBreath {
+  0%, 100% { box-shadow: 0 8px 18px -10px rgba(204,17,34,0.5); }
+  50%      { box-shadow: 0 14px 28px -12px rgba(204,17,34,0.7); }
+}
+
+/* --- Anchor link offset for sticky nav --- */
+:target { scroll-margin-top: 110px; }
+
+/* --- Refined card details --- */
+.listing-card .photo-frame { position: relative; }
+.listing-card .photo-frame::after {
+  content: '';
+  position: absolute; inset: 0;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 14px;
+  pointer-events: none;
+}
+
+/* --- Footer polish (light theme) --- */
+footer {
+  background: #fafafa !important;
+  color: #222 !important;
+  border-top: 1px solid #dddddd;
+}
+footer h4 { color: #222 !important; font-weight: 700; font-size: 0.9375rem; letter-spacing: -0.01em; }
+footer a {
+  color: #6a6a6a !important;
+  transition: color 0.15s ease;
+}
+footer a:hover { color: #CC1122 !important; }
+footer .border-t, footer .border-gray-700, footer .border-gray-800 { border-color: #dddddd !important; }
+
+/* --- Page-load veil --- */
+@keyframes pageFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+main { animation: pageFade 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* --- Input polish --- */
+input[type="text"], input[type="email"], input[type="tel"],
+input[type="search"], input[type="number"], input[type="date"],
+textarea, select {
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  background: #fff;
+  color: #222;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #222;
+  box-shadow: 0 0 0 2px #222;
+}
+
+/* --- Mobile touch target safety --- */
+@media (max-width: 767px) {
+  a, button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .menu-tab {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+  /* Kill horizontal scroll on mobile */
+  body { overflow-x: hidden; }
+}
+
+/* --- Reduce tap-highlight flash on iOS --- */
+a, button {
+  -webkit-tap-highlight-color: rgba(204,17,34,0.1);
+}
