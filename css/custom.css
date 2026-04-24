@@ -594,3 +594,12 @@ input:focus, textarea:focus, select:focus {
 a, button {
   -webkit-tap-highlight-color: rgba(204,17,34,0.1);
 }
+
+/* --- Social icon-circle refinement (uniform CTA strip) --- */
+.icon-circle {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.icon-circle:hover { color: #CC1122; border-color: #CC1122; }

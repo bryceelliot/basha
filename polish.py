@@ -1,83 +1,101 @@
-"""Tier-1 brand polish pass (v2): flexible logo replacement."""
+"""Final polish pass — strip GA4 placeholder, optimize hero LCP, uniform footer/sticky."""
 import os, re, glob
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-LOGO_NAV = (
-    '<a href="index.html" class="flex items-center gap-2.5 group flex-shrink-0">'
-    '<span class="relative inline-flex items-center justify-center w-10 h-10 rounded-full overflow-hidden transition-transform group-hover:scale-105">'
-    '<svg viewBox="0 0 40 40" class="w-full h-full" aria-hidden="true">'
-    '<defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">'
-    '<stop offset="0%" stop-color="#E8192E"/><stop offset="100%" stop-color="#9B0D1A"/>'
-    '</linearGradient></defs>'
-    '<rect width="40" height="40" fill="url(#bg1)"/>'
-    '<path d="M13 11h7.5c2.7 0 4.5 1.5 4.5 3.9 0 1.7-.9 2.9-2.5 3.4 2 .5 3 1.9 3 4 0 2.7-2 4.4-5 4.4H13V11zm3 3v4.2h3.4c1.4 0 2.1-.7 2.1-2.1 0-1.4-.7-2.1-2.2-2.1H16zm0 6.9v4.8h4c1.5 0 2.4-.9 2.4-2.4 0-1.5-.9-2.4-2.4-2.4h-4z" fill="#fff"/>'
-    '</svg>'
-    '</span>'
-    '<span class="flex flex-col leading-none">'
-    '<span class="text-[1.0625rem] font-bold tracking-tight text-ink">Basha</span>'
-    '<span class="text-[0.6875rem] font-semibold tracking-[0.14em] uppercase text-ash mt-0.5">Donair · Kelowna</span>'
-    '</span>'
-    '</a>'
-)
-
-LOGO_FOOTER = (
-    '<div class="flex items-center gap-2.5 mb-4">'
-    '<span class="inline-flex items-center justify-center w-10 h-10 rounded-full overflow-hidden">'
-    '<svg viewBox="0 0 40 40" class="w-full h-full" aria-hidden="true">'
-    '<rect width="40" height="40" fill="#CC1122"/>'
-    '<path d="M13 11h7.5c2.7 0 4.5 1.5 4.5 3.9 0 1.7-.9 2.9-2.5 3.4 2 .5 3 1.9 3 4 0 2.7-2 4.4-5 4.4H13V11zm3 3v4.2h3.4c1.4 0 2.1-.7 2.1-2.1 0-1.4-.7-2.1-2.2-2.1H16zm0 6.9v4.8h4c1.5 0 2.4-.9 2.4-2.4 0-1.5-.9-2.4-2.4-2.4h-4z" fill="#fff"/>'
-    '</svg>'
-    '</span>'
-    '<span class="flex flex-col leading-none">'
-    '<span class="text-lg font-bold tracking-tight">Basha</span>'
-    '<span class="text-[0.6875rem] font-semibold tracking-[0.14em] uppercase text-ash mt-0.5">Donair · Kelowna</span>'
-    '</span>'
-    '</div>'
-)
-
-# Aggressive but safe logo anchor matcher: first <a href="index.html"...> ... </a>
-# that appears INSIDE <nav> (we slice to just the nav region first).
-NAV_BLOCK_RE = re.compile(r'(<nav[^>]*id="navbar"[^>]*>.*?</nav>)', re.DOTALL)
-LOGO_ANCHOR_RE = re.compile(r'<a href="index\.html"[^>]*class="[^"]*flex[^"]*"[^>]*>.*?</a>', re.DOTALL)
-
-# Footer logo: first div that contains a `w-\d+ h-\d+ bg-basha-red rounded-full` with "B"
-FOOTER_LOGO_RE = re.compile(
-    r'<div class="flex items-center gap-\d+\s*mb-\d+">\s*<div class="w-\d+ h-\d+ bg-basha-red rounded-full[^"]*"[^>]*>\s*B\s*</div>\s*<span[^>]*>[^<]*</span>\s*</div>',
+GA4_RE = re.compile(
+    r'<!-- ── Google Analytics[^>]*-->\s*<script async src="https://www\.googletagmanager\.com[^"]*G-X+[^"]*"></script>\s*<script>[^<]*?gtag\([^)]*G-X+[^)]*\);?\s*</script>',
     re.DOTALL,
+)
+GA4_RE_LOOSE = re.compile(
+    r'<script async src="https://www\.googletagmanager\.com/gtag/js\?id=G-X+"></script>\s*<script>\s*window\.dataLayer.*?gtag\(\'config\', \'G-X+\'\);\s*</script>',
+    re.DOTALL,
+)
+GA4_COMMENT = re.compile(r'<!-- ── Google Analytics[^>]*-->', re.DOTALL)
+
+# Optimize Unsplash URLs: w=1920 → w=1200, q=80 → q=70 (smaller payload)
+def optimize_unsplash(html):
+    return re.sub(
+        r'(https://images\.unsplash\.com/photo-[^"\s)]+)([?&])w=(1600|1800|1920|2400)',
+        r'\1\2w=1200',
+        html,
+    )
+
+# Add fetchpriority to first <img> tag (hero LCP)
+def hero_priority(html):
+    # only apply once per page
+    def once(m, state=[False]):
+        if state[0]: return m.group(0)
+        state[0] = True
+        tag = m.group(0)
+        if 'fetchpriority' not in tag:
+            tag = tag[:-1] + ' fetchpriority="high">'
+        return tag
+    return re.sub(r'<img[^>]*>', once, html, count=1)
+
+# Standard franchise CTA strip (uniform across pages, light theme)
+CTA_STRIP = (
+    '<section class="bg-cloud border-y border-hairline">'
+    '<div class="max-w-7xl mx-auto px-4 md:px-8 py-14 md:py-20 grid md:grid-cols-3 gap-8 items-center">'
+    '<div class="reveal">'
+    '<div class="text-xs font-bold tracking-[0.18em] uppercase text-basha-red mb-2">Visit · Pickup · Delivery</div>'
+    '<h2 class="text-3xl md:text-4xl font-bold tracking-tight text-ink leading-tight">Open daily · 10am – 9pm</h2>'
+    '<p class="text-ash mt-3 leading-relaxed">101-135 Rutland Rd&nbsp;N, Kelowna, BC. Free parking on-site.</p>'
+    '</div>'
+    '<div class="reveal flex flex-wrap gap-3 justify-start md:justify-center">'
+    '<a href="tel:+17787537313" class="btn-rausch btn-pill cta-primary">📞 (778) 753-7313</a>'
+    '<a href="menu.html" class="btn-ghost btn-pill">View Menu →</a>'
+    '</div>'
+    '<div class="reveal flex md:justify-end gap-2">'
+    '<a href="https://www.skipthedishes.com/basha-donair-and-shawarma-rutland" rel="noopener" class="icon-circle" aria-label="SkipTheDishes" title="SkipTheDishes">🍴</a>'
+    '<a href="https://www.doordash.com/store/basha-donair-shawarma-kelowna-28542163/" rel="noopener" class="icon-circle" aria-label="DoorDash" title="DoorDash">🚪</a>'
+    '<a href="https://www.facebook.com/bashakelowna/" rel="noopener" class="icon-circle" aria-label="Facebook" title="Facebook">f</a>'
+    '<a href="https://www.instagram.com/bashadonairkelowna/" rel="noopener" class="icon-circle" aria-label="Instagram" title="Instagram">◫</a>'
+    '</div>'
+    '</div>'
+    '</section>'
 )
 
 
 def polish(path):
+    name = os.path.basename(path)
     with open(path, "r", encoding="utf-8") as f:
         html = f.read()
     orig = html
 
-    # 1. Replace first logo anchor inside navbar
-    def swap_nav(m):
-        nav = m.group(1)
-        nav_new = LOGO_ANCHOR_RE.sub(LOGO_NAV, nav, count=1)
-        return nav_new
-    html = NAV_BLOCK_RE.sub(swap_nav, html, count=1)
+    # 1. Strip GA4 placeholder blocks (saves 63 KiB unused JS)
+    html = GA4_RE.sub('', html)
+    html = GA4_RE_LOOSE.sub('', html)
+    html = GA4_COMMENT.sub('', html)
 
-    # 2. Footer logo
-    html = FOOTER_LOGO_RE.sub(LOGO_FOOTER, html)
+    # 2. Optimize Unsplash URLs
+    html = optimize_unsplash(html)
 
-    # 3. img hardening
-    def img_hardener(m):
-        tag = m.group(0)
-        if 'loading=' not in tag:
-            tag = tag[:-1] + ' loading="lazy">'
-        if 'decoding=' not in tag:
-            tag = tag[:-1] + ' decoding="async">'
-        return tag
-    html = re.sub(r'<img[^>]*>', img_hardener, html)
+    # 3. Hero image fetchpriority (skip 404, gallery, contact — non-hero pages)
+    if name not in {"404.html"}:
+        html = hero_priority(html)
 
-    # 4. Defer non-critical script tags in body
+    # 4. Insert uniform CTA strip just before closing footer (only once)
+    if "<!-- UNIFORM-CTA -->" not in html and "</footer>" in html:
+        # Insert before footer
+        html = re.sub(
+            r'(<footer)',
+            f'<!-- UNIFORM-CTA -->{CTA_STRIP}\\1',
+            html,
+            count=1,
+        )
+
+    # 5. Update sticky-order-bar to consistent labels
     html = re.sub(
-        r'<script src="(js/[^"]+)"(?!\s+defer)></script>',
-        r'<script src="\1" defer></script>',
+        r'<div class="sticky-order-bar md:hidden">.*?</div>',
+        '<div class="sticky-order-bar md:hidden">'
+        '<a href="tel:+17787537313" aria-label="Call">📞 Call</a>'
+        '<a href="menu.html" aria-label="Order">🥙 Order</a>'
+        '<a href="https://www.google.com/maps/search/?api=1&query=101-135+Rutland+Rd+N+Kelowna+BC" aria-label="Directions">📍 Map</a>'
+        '</div>',
         html,
+        flags=re.DOTALL,
+        count=1,
     )
 
     if html != orig:
