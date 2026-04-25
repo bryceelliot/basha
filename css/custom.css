@@ -712,3 +712,43 @@ footer img.brand-logo {
   box-sizing: border-box;
   border: 1px solid #f0f0f0;
 }
+
+/* --- Footer social icons with brand colors on hover --- */
+.social-icon {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #dddddd;
+  color: #6a6a6a;
+  transition: transform 0.2s cubic-bezier(0.22,1,0.36,1),
+              background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+.social-icon:hover { transform: translateY(-2px) scale(1.05); }
+.social-icon:active { transform: scale(0.94); }
+
+.social-fb:hover {
+  background: #1877F2; color: #fff; border-color: #1877F2;
+  box-shadow: 0 6px 16px -6px rgba(24,119,242,0.6);
+}
+.social-ig:hover {
+  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  color: #fff; border-color: transparent;
+  box-shadow: 0 6px 16px -6px rgba(220,39,67,0.6);
+}
+.social-dd:hover {
+  background: #FF3008; color: #fff; border-color: #FF3008;
+  box-shadow: 0 6px 16px -6px rgba(255,48,8,0.6);
+}
+.social-skip {
+  width: auto; padding: 0 14px; min-width: 60px;
+}
+.social-skip:hover {
+  background: #FF8000; color: #fff; border-color: #FF8000;
+  box-shadow: 0 6px 16px -6px rgba(255,128,0,0.6);
+}
+.social-skip:hover svg circle { fill: #fff; }
