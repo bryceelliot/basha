@@ -635,3 +635,32 @@ a, button {
   text-decoration: none;
 }
 .icon-circle:hover { color: #CC1122; border-color: #CC1122; }
+
+/* ============================================================
+   2026 — VIEW TRANSITIONS API + CURSOR SPOTLIGHT
+   ============================================================ */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) {
+  animation-duration: 0.42s; animation-timing-function: cubic-bezier(0.22,1,0.36,1);
+}
+::view-transition-old(root) { animation-name: vt-fade-out; }
+::view-transition-new(root) { animation-name: vt-fade-in; }
+@keyframes vt-fade-out { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes vt-fade-in  { from { opacity: 0; transform: translateY(8px); } }
+
+/* Cursor spotlight on the hero (mouse-tracked red glow) */
+@media (hover: hover) and (pointer: fine) {
+  section.relative.min-h-screen { --mx: 50%; --my: 50%; }
+  section.relative.min-h-screen::after {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(420px circle at var(--mx) var(--my),
+                rgba(204, 17, 34, 0.18), transparent 60%);
+    pointer-events: none; mix-blend-mode: screen;
+    transition: opacity 0.4s ease;
+    z-index: 5;
+  }
+}
+
+/* Article body type (blog) */
+.prose-section section h2 { margin-top: 2rem; }
+.prose-section p { margin-bottom: 1.25em; }

@@ -1,0 +1,62 @@
+name: Deploy + Lighthouse
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install + build CSS
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to Bluehost via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: lfg.obp.mybluehost.me
+          username: bryce@lfg.obp.mybluehost.me
+          password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+          server-dir: website_ffb90ac7/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/src/**
+            **/*.py
+            **/*.md
+            **/*.zip
+            **/lighthouse-*.json
+            **/deploy_ftp.py
+            **/postcss.config.js
+            **/tailwind.config.js
+            **/package*.json
+
+  lighthouse:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for deploy propagation
+        run: sleep 30
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            https://website-ffb90ac7.lfg.obp.mybluehost.me/
+            https://website-ffb90ac7.lfg.obp.mybluehost.me/menu.html
+            https://website-ffb90ac7.lfg.obp.mybluehost.me/donair-rutland.html
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          configPath: '.lighthouserc.json'

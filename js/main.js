@@ -258,3 +258,22 @@
     });
   });
 })();
+
+/* --- Hero cursor spotlight --- */
+(function () {
+  if (window.matchMedia('(hover: none)').matches) return;
+  var hero = document.querySelector('section.relative.min-h-screen');
+  if (!hero) return;
+  hero.addEventListener('mousemove', function (e) {
+    var r = hero.getBoundingClientRect();
+    hero.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    hero.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  }, { passive: true });
+})();
+
+/* --- Service Worker registration --- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}
