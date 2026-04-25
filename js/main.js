@@ -277,3 +277,59 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(function () {});
   });
 }
+
+/* --- Lightbox: any <img data-lightbox> opens a fullscreen viewer --- */
+(function () {
+  var imgs = document.querySelectorAll('img[data-lightbox]');
+  if (!imgs.length) return;
+
+  var overlay = document.createElement('div');
+  overlay.className = 'lightbox-overlay';
+  overlay.innerHTML =
+    '<button class="lightbox-close" aria-label="Close">&times;</button>' +
+    '<button class="lightbox-nav lightbox-prev" aria-label="Previous">&larr;</button>' +
+    '<button class="lightbox-nav lightbox-next" aria-label="Next">&rarr;</button>' +
+    '<img class="lightbox-img" alt="">' +
+    '<div class="lightbox-counter"></div>';
+  document.body.appendChild(overlay);
+
+  var imgEl = overlay.querySelector('.lightbox-img');
+  var counter = overlay.querySelector('.lightbox-counter');
+  var idx = 0;
+  var sources = [].map.call(imgs, function (i) {
+    return { src: i.dataset.lightbox || i.src, alt: i.alt || '' };
+  });
+
+  function open(i) {
+    idx = (i + sources.length) % sources.length;
+    imgEl.src = sources[idx].src;
+    imgEl.alt = sources[idx].alt;
+    counter.textContent = (idx + 1) + ' / ' + sources.length;
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  imgs.forEach(function (i, n) {
+    i.addEventListener('click', function (e) { e.preventDefault(); open(n); });
+  });
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) close();
+  });
+  overlay.querySelector('.lightbox-close').addEventListener('click', close);
+  overlay.querySelector('.lightbox-prev').addEventListener('click', function (e) {
+    e.stopPropagation(); open(idx - 1);
+  });
+  overlay.querySelector('.lightbox-next').addEventListener('click', function (e) {
+    e.stopPropagation(); open(idx + 1);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (!overlay.classList.contains('active')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') open(idx - 1);
+    if (e.key === 'ArrowRight') open(idx + 1);
+  });
+})();
