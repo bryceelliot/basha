@@ -191,7 +191,39 @@ a.link-ink:hover { color: #CC1122; }
 .rounded-2xl, .rounded-3xl { border-radius: 20px !important; }
 .rounded-xl { border-radius: 14px !important; }
 
-.hero-title { text-shadow: none !important; color: #222 !important; }
+.hero-title {
+  text-shadow: 0 2px 30px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.45);
+  color: #fff !important;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+/* Photo-background hero: white text overrides for readability */
+section.relative.min-h-screen,
+section.relative.min-h-screen .text-white,
+section.relative.min-h-screen h1,
+section.relative.min-h-screen h2,
+section.relative.min-h-screen p { color: #fff !important; }
+section.relative.min-h-screen .text-gray-200 { color: rgba(255,255,255,0.92) !important; }
+section.relative.min-h-screen .text-gray-300 { color: rgba(255,255,255,0.82) !important; }
+section.relative.min-h-screen .text-basha-red { color: #FFB3B8 !important; }
+/* Stronger overlay for guaranteed text contrast on the food photo */
+section.relative.min-h-screen > div.absolute.inset-0 > div.absolute.inset-0 {
+  background: linear-gradient(180deg,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.65) 50%,
+    rgba(0,0,0,0.78) 100%) !important;
+}
+/* Hero section CTAs need to keep their styling — undo the global !important on .bg-basha-dark */
+section.relative.min-h-screen a.btn-order { color: #fff !important; background: #CC1122 !important; }
+
+/* Logo image in nav: real photo, properly sized */
+#navbar img.brand-logo {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+footer img.brand-logo {
+  width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+}
 
 /* --- Search pill --- */
 .search-pill {
