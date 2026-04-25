@@ -703,3 +703,12 @@ a, button {
 /* Article body type (blog) */
 .prose-section section h2 { margin-top: 2rem; }
 .prose-section p { margin-bottom: 1.25em; }
+
+/* Real franchise logo (BD chef mark, transparent PNG) — give it a soft circle backdrop */
+#navbar img.brand-logo,
+footer img.brand-logo {
+  background: #ffffff;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 1px solid #f0f0f0;
+}
