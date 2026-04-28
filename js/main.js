@@ -333,3 +333,57 @@ if ('serviceWorker' in navigator) {
     if (e.key === 'ArrowRight') open(idx + 1);
   });
 })();
+
+/* --- Web Vitals: report to console (and to GA4 if available) --- */
+(function () {
+  if (!('PerformanceObserver' in window)) return;
+  function report(name, value) {
+    var v = Math.round(name === 'CLS' ? value * 1000 : value);
+    if (window.console && console.log) console.log('[Web Vitals]', name, v);
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', name, { value: v, metric_id: name, non_interaction: true });
+    }
+  }
+  // LCP
+  try {
+    new PerformanceObserver(function (l) {
+      var entries = l.getEntries();
+      var last = entries[entries.length - 1];
+      report('LCP', last.startTime);
+    }).observe({ type: 'largest-contentful-paint', buffered: true });
+  } catch (e) {}
+  // CLS
+  try {
+    var cls = 0;
+    new PerformanceObserver(function (l) {
+      l.getEntries().forEach(function (e) {
+        if (!e.hadRecentInput) cls += e.value;
+      });
+      report('CLS', cls);
+    }).observe({ type: 'layout-shift', buffered: true });
+  } catch (e) {}
+  // FCP
+  try {
+    new PerformanceObserver(function (l) {
+      l.getEntries().forEach(function (e) {
+        if (e.name === 'first-contentful-paint') report('FCP', e.startTime);
+      });
+    }).observe({ type: 'paint', buffered: true });
+  } catch (e) {}
+})();
+
+/* --- Magnetic floating phone button --- */
+(function () {
+  var btn = document.querySelector('.whatsapp-float');
+  if (!btn) return;
+  if (window.matchMedia('(hover: none)').matches) return;
+  btn.addEventListener('mousemove', function (e) {
+    var r = btn.getBoundingClientRect();
+    var x = ((e.clientX - r.left) / r.width - 0.5) * 12;
+    var y = ((e.clientY - r.top) / r.height - 0.5) * 12;
+    btn.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(1.08)';
+  });
+  btn.addEventListener('mouseleave', function () {
+    btn.style.transform = '';
+  });
+})();
