@@ -414,3 +414,29 @@ if ('serviceWorker' in navigator) {
     });
   });
 })();
+
+/* --- Catering quote calculator --- */
+(function () {
+  var root = document.getElementById('catering-calc');
+  if (!root) return;
+  var perPersonByLevel = { basic: 12, standard: 16, premium: 22 };
+  var minOrder = 10;
+  var guestsEl = root.querySelector('[data-guests]');
+  var levelEl = root.querySelector('[data-level]');
+  var output = root.querySelector('[data-quote-output]');
+  function update() {
+    var g = Math.max(minOrder, parseInt(guestsEl.value, 10) || minOrder);
+    var lvl = levelEl.value || 'standard';
+    var pp = perPersonByLevel[lvl] || 16;
+    var total = g * pp;
+    output.innerHTML =
+      '<div class="text-xs text-ash uppercase tracking-widest font-semibold mb-1">Estimated total</div>' +
+      '<div class="text-4xl md:text-5xl font-bold tracking-tight text-basha-red">$' + total.toFixed(2) + '</div>' +
+      '<div class="text-sm text-ash mt-2">' + g + ' guests · $' + pp + '/person · ' +
+      (lvl.charAt(0).toUpperCase() + lvl.slice(1)) + ' tier</div>' +
+      '<div class="text-xs text-ash mt-3">Final pricing confirmed at order. 24 hr advance notice for groups.</div>';
+  }
+  guestsEl.addEventListener('input', update);
+  levelEl.addEventListener('change', update);
+  update();
+})();
