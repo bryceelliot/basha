@@ -387,3 +387,30 @@ if ('serviceWorker' in navigator) {
     btn.style.transform = '';
   });
 })();
+
+/* --- Mark active nav link with aria-current="page" --- */
+(function () {
+  var path = location.pathname.replace(/\/+$/, '/');
+  var current = path === '/' ? 'index.html' : path.split('/').pop();
+  document.querySelectorAll('#navbar a').forEach(function (a) {
+    var href = a.getAttribute('href') || '';
+    var leaf = href.split('/').pop();
+    if (leaf === current || (current === '' && href === 'index.html')) {
+      a.setAttribute('aria-current', 'page');
+    }
+  });
+})();
+
+/* --- Journal search (only on /journal/index.html) --- */
+(function () {
+  var input = document.getElementById('journal-search');
+  if (!input) return;
+  var cards = document.querySelectorAll('[data-journal-card]');
+  input.addEventListener('input', function () {
+    var q = input.value.toLowerCase().trim();
+    cards.forEach(function (c) {
+      var t = (c.textContent || '').toLowerCase();
+      c.style.display = !q || t.indexOf(q) !== -1 ? '' : 'none';
+    });
+  });
+})();

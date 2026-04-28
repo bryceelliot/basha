@@ -60,3 +60,12 @@ ErrorDocument 404 /website_ffb90ac7/404.html
   Header set Referrer-Policy "no-referrer-when-downgrade"
   Header set X-XSS-Protection "1; mode=block"
 </IfModule>
+
+# ── bfcache + cache hints ──
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+  Header unset Pragma
+  Header unset Expires
+</IfModule>

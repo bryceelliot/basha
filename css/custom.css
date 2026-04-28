@@ -835,3 +835,61 @@ img[src].skeleton-load { animation: none; background: none; }
 
 /* --- Press-kit color swatches --- */
 .brand-swatch { font-variant-numeric: tabular-nums; }
+
+/* --- Skip-to-content link --- */
+.skip-link {
+  position: absolute; top: -100px; left: 0;
+  background: #CC1122; color: #fff;
+  padding: 12px 20px; z-index: 999;
+  font-weight: 700; text-decoration: none;
+  border-radius: 0 0 8px 0;
+  transition: top 0.2s ease;
+}
+.skip-link:focus { top: 0; }
+
+/* --- aria-current active nav state --- */
+#navbar a[aria-current="page"] {
+  color: #CC1122 !important;
+  position: relative;
+}
+#navbar a[aria-current="page"]::after {
+  content: ''; position: absolute;
+  left: 0; right: 0; bottom: -6px;
+  height: 2px; background: #CC1122;
+}
+
+/* --- Print stylesheet --- */
+@media print {
+  #navbar, footer, .sticky-order-bar, .whatsapp-float,
+  #back-to-top, .cookie-banner, .scroll-progress { display: none !important; }
+  body { background: #fff !important; color: #000 !important; padding: 0 !important; font-size: 11pt; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  a { color: #000 !important; text-decoration: underline; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #555; }
+  section { page-break-inside: avoid; }
+  h1, h2, h3 { page-break-after: avoid; }
+  img { max-width: 60% !important; height: auto !important; page-break-inside: avoid; }
+  .btn-rausch, .btn-ghost { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; }
+}
+
+/* --- Stronger reduce-motion --- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .ken-burns, .float-slow, .shimmer-text, .blob,
+  .pulse-ring, .marquee-track, .card-lift, .zoom-frame img,
+  .btn-magnetic, .grad-border::before, section { animation: none !important; transform: none !important; }
+  .reveal { opacity: 1 !important; }
+}
+
+/* --- Better focus states --- */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid #CC1122 !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
