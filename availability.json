@@ -1,0 +1,31 @@
+{
+  "name": "Basha Donair & Shawarma Kelowna",
+  "address": "101-135 Rutland Rd N, Kelowna, BC V1X 3B1",
+  "phone": "(778) 753-7313",
+  "geo": {
+    "lat": 49.888,
+    "lng": -119.405
+  },
+  "timezone": "America/Vancouver",
+  "hours": {
+    "mon": "10:00-21:00",
+    "tue": "10:00-21:00",
+    "wed": "10:00-21:00",
+    "thu": "10:00-21:00",
+    "fri": "10:00-21:00",
+    "sat": "10:00-21:00",
+    "sun": "10:00-21:00"
+  },
+  "lastOrder": "20:45",
+  "halal": true,
+  "orderUrl": "https://order.online/store/basha-donair-shawarma-kelowna-kelowna-28542163",
+  "delivery": {
+    "skipthedishes": "https://www.skipthedishes.com/basha-donair-and-shawarma-rutland",
+    "doordash": "https://www.doordash.com/store/basha-donair-shawarma-kelowna-28542163/"
+  },
+  "social": {
+    "facebook": "https://www.facebook.com/bashakelowna/",
+    "instagram": "https://www.instagram.com/bashadonairkelowna/"
+  },
+  "updated": "2026-04-28T04:31:00.944529+00:00"
+}

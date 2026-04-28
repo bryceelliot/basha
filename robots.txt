@@ -25,3 +25,4 @@ Allow: /
 
 # Sitemap & AI reference file
 Sitemap: http://lfg.obp.mybluehost.me/website_ffb90ac7/sitemap.xml
+Sitemap: https://website-ffb90ac7.lfg.obp.mybluehost.me/sitemap-image.xml
