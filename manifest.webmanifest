@@ -1,0 +1,18 @@
+{
+  "name": "Basha Donair & Shawarma Kelowna",
+  "short_name": "Basha",
+  "description": "Authentic halal Mediterranean restaurant in Rutland, Kelowna.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#CC1122",
+  "icons": [
+    {
+      "src": "images/logo.png",
+      "sizes": "400x400",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
